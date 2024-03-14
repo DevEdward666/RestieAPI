@@ -18,13 +18,13 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore RestieAPI/RestieApi.csproj
+      run: dotnet restore RestieAPI/RestieAPI.csproj
     - name: Build
-      run: dotnet build RestieAPI/RestieApi.csproj --no-restore
+      run: dotnet build RestieAPI/RestieAPI.csproj --no-restore
     - name: Publish
-      run: dotnet publish RestieAPI/RestieApi.csproj -c Release -o RestieAPI/RestieApi/restieapi
+      run: dotnet publish RestieAPI/RestieAPI.csproj -c Release -o RestieAPI/RestieAPI/restieapi
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
       with:
         name: .net-app
-        path: RestieApi/RestieApi/restieapi
+        path: RestieAPI/RestieAPI/restieapi
