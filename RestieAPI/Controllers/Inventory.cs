@@ -1,43 +1,36 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using RestieAPI.Configs;
-using RestieAPI.Models;
-using RestieAPI.Service;
+using RestieAPI.Models.Request;
+using RestieAPI.Models.Response;
+using RestieAPI.Service.Repo;
 
 namespace RestieAPI.Controllers
 {
+    [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     public class Inventory : ControllerBase
     {
-        private readonly DatabaseService _databaseService;
-        public Inventory(DatabaseService databaseService)
+        public IConfiguration configuration;
+        InventoryRepo _inventoryRepo;
+        public Inventory(IConfiguration configuration)
         {
-            _databaseService = databaseService;
+            this.configuration = configuration;
+            _inventoryRepo = new InventoryRepo(configuration);
         }
-        [HttpGet]
-        public ActionResult<List<InventoryItemModel>> GetInventory()
+        [HttpPost]
+        public ActionResult<InventoryItemModel> GetInventory(InventoryRequestModel.GetAllInventory getAllInventory)
         {
-            var sql = "SELECT * FROM Inventory;";
-            var reader = _databaseService.ExecuteQuery(sql);
+            return Ok(_inventoryRepo.GetInventory(getAllInventory));
+        }
 
-            // Process results
-            var results = new List<InventoryItemModel>(); // Assuming InventoryItem is your model class
-            while (reader.Read())
-            {
-                var inventoryItem = new InventoryItemModel
-                {
-                    code = reader.GetString(0), 
-                    item = reader.GetString(1), 
-                                                
-                };
-
-                results.Add(inventoryItem);
-            }
-
-            // Close the reader
-            reader.Close();
-            return Ok(results);
+        [HttpPost("AddInventory")]
+        public ActionResult<PostInventoryResponse> PostInventory(InventoryRequestModel.PostInventory postInventory)
+        {
+            return Ok(_inventoryRepo.PostInventory(postInventory));
         }
 
     }

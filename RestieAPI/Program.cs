@@ -15,6 +15,7 @@ namespace RestieAPI
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+
                     webBuilder.UseStartup<Startup>(); // Use Startup class here
                 });
     }
